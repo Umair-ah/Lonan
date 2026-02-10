@@ -1,0 +1,9 @@
+export { Header } from "./Header";
+export { Hero } from "./Hero";
+export { About } from "./About";
+export { Services } from "./Services";
+export { Partners } from "./Partners";
+export { Contact } from "./Contact";
+export { Footer } from "./Footer";
+export { WhatsAppButton } from "./WhatsAppButton";
+export { LanguageToggle } from "./LanguageToggle";
