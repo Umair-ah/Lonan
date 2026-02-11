@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLanguage, useTranslation } from "~/context/LanguageContext";
+import { useScrollReveal } from "~/hooks/useScrollReveal";
 
 interface CompanyInfo {
   companyName?: string;
@@ -11,16 +12,37 @@ interface CompanyInfo {
   mission?: string;
   missionEn?: string;
   logo?: string;
+  logoLight?: string;
 }
 
 interface AboutProps {
   companyInfo?: CompanyInfo | null;
 }
 
+/* Animated counter hook */
+function useCounter(target: number, duration = 2000, start = false) {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    if (!start) return;
+    let startTime: number;
+    const animate = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+      setCount(Math.floor(eased * target));
+      if (progress < 1) requestAnimationFrame(animate);
+    };
+    requestAnimationFrame(animate);
+  }, [target, duration, start]);
+  return count;
+}
+
 export function About({ companyInfo }: AboutProps) {
-  const [showVisionMission, setShowVisionMission] = useState(false);
   const { t, isRTL } = useLanguage();
   const { getText } = useTranslation();
+  const { ref: sectionRef, isVisible } = useScrollReveal({ threshold: 0.05 });
+  const { ref: statsRef, isVisible: statsVisible } = useScrollReveal({ threshold: 0.3 });
+  const [activeCard, setActiveCard] = useState<"vision" | "mission" | null>(null);
 
   const aboutText = t(companyInfo?.about, companyInfo?.aboutEn);
   const visionText = t(companyInfo?.vision, companyInfo?.visionEn);
@@ -29,9 +51,13 @@ export function About({ companyInfo }: AboutProps) {
 
   const hasContent = aboutText || visionText || missionText;
 
+  const yearsCount = useCounter(20, 2000, statsVisible);
+  const clientsCount = useCounter(500, 2500, statsVisible);
+  const projectsCount = useCounter(1000, 3000, statsVisible);
+
   if (!hasContent) {
     return (
-      <section id="about" className="section bg-white">
+      <section id="about" className="section bg-[#1E1E1E]">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="text-center">
             <span className="section-title">
@@ -40,8 +66,8 @@ export function About({ companyInfo }: AboutProps) {
               </svg>
               {getText("whoWeAre")}
             </span>
-            <div className="mt-8 p-8 bg-[var(--color-gray-light)] rounded-2xl">
-              <p className="text-[var(--color-gray-dark)]">
+            <div className="mt-8 p-8 bg-white/5 rounded-2xl border border-white/10">
+              <p className="text-gray-400">
                 {getText("addFromDashboard")}
               </p>
             </div>
@@ -52,77 +78,283 @@ export function About({ companyInfo }: AboutProps) {
   }
 
   return (
-    <section id="about" className="section relative overflow-hidden" style={{ backgroundColor: "#F4D03F" }}>
-      {/* Background decoration */}
-      <div className={`absolute top-0 ${isRTL ? "left-0" : "right-0"} w-1/3 h-full bg-[var(--color-gray-light)] ${isRTL ? "rounded-l-[100px]" : "rounded-r-[100px]"} -z-10`} />
-      
-      <div className="container mx-auto px-4 lg:px-8">
-        {/* Section Title */}
-        <div className="text-center font-bold">
-          <span className="section-title">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            {getText("whoWeAre")}
-          </span>
-        </div>
+    <section id="about" className="relative overflow-hidden bg-[var(--color-black-pure)]" ref={sectionRef}>
 
-        <div className="grid lg:grid-cols-1 mt-7 place-items-center">
-          {/* Content */}
-          
-          
-          <div className={`${isRTL ? "order-2 lg:order-1" : "order-2 lg:order-2"}`}>
-            <div className="space-y-6">
-              {aboutText && (
-                <div className="text-lg text-[var(--color-gray-dark)] leading-relaxed whitespace-pre-line">
-                  <span className="font-bold text-2xl">
-                    {companyName || (isRTL ? "لونان" : "Lonan")}
-                  </span>{" "}
-                  {aboutText}
+      {/* ── Background Elements ── */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Large diagonal gold gradient stripe */}
+        <div className="absolute -top-1/2 -right-1/4 w-[800px] h-[800px] bg-[#F4D03F]/[0.03] rounded-full blur-[120px]" />
+        <div className="absolute -bottom-1/4 -left-1/4 w-[600px] h-[600px] bg-[#F4D03F]/[0.02] rounded-full blur-[100px]" />
+        
+        {/* Grid lines */}
+        <div className="absolute inset-0 opacity-[0.03]" style={{
+          backgroundImage: `linear-gradient(#F4D03F 1px, transparent 1px), linear-gradient(90deg, #F4D03F 1px, transparent 1px)`,
+          backgroundSize: "80px 80px",
+        }} />
+      </div>
+
+      {/* ── Top Gold Accent Strip ── */}
+      <div className="relative h-1 bg-gradient-to-r from-transparent via-[#F4D03F] to-transparent opacity-40" />
+
+      <div className="relative z-10 py-20 lg:py-28">
+        <div className="container mx-auto px-4 lg:px-8 max-w-7xl">
+
+          {/* ── Section Header ── */}
+          <div className={`text-center mb-20 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
+            {/* Top decorative line */}
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <div className="w-12 h-px bg-gradient-to-r from-transparent via-[#F4D03F]/40 to-[#F4D03F]/40 rounded-full" />
+              <div className="w-2 h-2 bg-[#F4D03F] rounded-full shadow-[0_0_12px_rgba(244,208,63,0.5)]" />
+              <div className="w-12 h-px bg-gradient-to-l from-transparent via-[#F4D03F]/40 to-[#F4D03F]/40 rounded-full" />
+            </div>
+
+            {/* Main Title */}
+            <div className="relative inline-block">
+              {/* Icon badge */}
+              {/* <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-gradient-to-br from-[#F4D03F] to-[#C49000] flex items-center justify-center shadow-lg shadow-[#F4D03F]/30 z-10">
+                <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div> */}
+
+              {/* Title text with background */}
+              <div className="relative px-8 pt-6 pb-4 bg-black/60 backdrop-blur-sm rounded-2xl border border-[#F4D03F]/20">
+                <h2 className="text-3xl lg:text-4xl font-black text-[#F4D03F] tracking-tight">
+                  {getText("whoWeAre")}
+                </h2>
+                
+                {/* Bottom accent line */}
+                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-16 h-0.5 bg-gradient-to-r from-transparent via-[#F4D03F] to-transparent rounded-full" />
+              </div>
+
+              {/* Corner decorations */}
+              <div className="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-[#F4D03F]/30 rounded-tl-lg" />
+              <div className="absolute -top-1 -right-1 w-4 h-4 border-t-2 border-r-2 border-[#F4D03F]/30 rounded-tr-lg" />
+              <div className="absolute -bottom-1 -left-1 w-4 h-4 border-b-2 border-l-2 border-[#F4D03F]/30 rounded-bl-lg" />
+              <div className="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-[#F4D03F]/30 rounded-br-lg" />
+            </div>
+
+            {/* Subtitle/Description */}
+            <p className="mt-6 text-sm text-gray-400 font-medium uppercase tracking-[0.2em]">
+              {isRTL ? "تعرف على رؤيتنا ورسالتنا" : "Discover Our Vision & Mission"}
+            </p>
+          </div>
+
+          {/* ── Main Content: Logo + About Text ── */}
+          <div className={`grid lg:grid-cols-5 gap-10 lg:gap-16 items-center mb-20 transition-all duration-1000 delay-200 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
+
+            {/* Logo Side (2 cols) */}
+            <div className={`lg:col-span-2 flex justify-center ${isRTL ? "lg:order-2" : "lg:order-1"}`}>
+              <div className="relative group">
+                {/* Animated ring */}
+                <div className="absolute -inset-4 rounded-3xl opacity-60 group-hover:opacity-100 transition-opacity duration-700">
+                  <div className="absolute inset-0 rounded-3xl border-2 border-[#F4D03F]/20 animate-[spin_20s_linear_infinite]"
+                    style={{ clipPath: "polygon(0 0, 50% 0, 50% 100%, 0 100%)" }} />
+                  <div className="absolute inset-0 rounded-3xl border-2 border-[#F4D03F]/10 animate-[spin_25s_linear_infinite_reverse]"
+                    style={{ clipPath: "polygon(50% 0, 100% 0, 100% 100%, 50% 100%)" }} />
                 </div>
-              )}
+
+                {/* Logo container */}
+                <div className="relative w-56 h-56 lg:w-72 lg:h-72">
+                  {companyInfo?.logo ? (
+                    <img
+                      src={companyInfo.logoLight}
+                      alt={companyName || "Logo"}
+                      className="w-full h-full object-contain drop-shadow-[0_0_30px_rgba(244,208,63,0.15)] group-hover:scale-105 transition-transform duration-500"
+                    />
+                  ) : (
+                    <div className="text-5xl lg:text-6xl font-black text-[#F4D03F]">
+                      {(companyName || "L").charAt(0)}
+                    </div>
+                  )}
+
+                  {/* Corner accents */}
+                  {/* <div className="absolute top-3 left-3 w-5 h-5 border-t-2 border-l-2 border-[#F4D03F]/40 rounded-tl-lg" />
+                  <div className="absolute top-3 right-3 w-5 h-5 border-t-2 border-r-2 border-[#F4D03F]/40 rounded-tr-lg" />
+                  <div className="absolute bottom-3 left-3 w-5 h-5 border-b-2 border-l-2 border-[#F4D03F]/40 rounded-bl-lg" />
+                  <div className="absolute bottom-3 right-3 w-5 h-5 border-b-2 border-r-2 border-[#F4D03F]/40 rounded-br-lg" /> */}
+                </div>
+
+                {/* Glow effect behind */}
+                <div className="absolute inset-0 rounded-3xl bg-[#F4D03F]/5 blur-2xl -z-10 group-hover:bg-[#F4D03F]/10 transition-all duration-500" />
+              </div>
+            </div>
+
+            {/* About Text Side (3 cols) */}
+            <div className={`lg:col-span-3 ${isRTL ? "lg:order-1" : "lg:order-2"}`}>
+              <div className="space-y-6">
+                {/* Company name as heading */}
+                <div>
+                  <h2 className="text-3xl lg:text-5xl font-black text-white mb-2 leading-tight">
+                    {companyName || (isRTL ? "لونان" : "Lonan")}
+                  </h2>
+                  <div className="flex items-center gap-3 mt-3">
+                    <div className="w-12 h-1 bg-[#F4D03F] rounded-full" />
+                    <span className="text-[#F4D03F] text-sm font-semibold uppercase tracking-widest">
+                      {isRTL ? "للدعاية والإعلان" : "Advertising Agency"}
+                    </span>
+                  </div>
+                </div>
+
+                {/* About paragraph */}
+                {aboutText && (
+                  <p className="text-gray-400 text-lg lg:text-xl leading-relaxed whitespace-pre-line">
+                    {aboutText}
+                  </p>
+                )}
+
+                {/* Quick highlights */}
+                <div className="flex flex-wrap gap-3 pt-2">
+                  {[
+                    { icon: "⚡", textKey: "fastExecution" as const },
+                    { icon: "💎", textKey: "highQuality" as const },
+                    { icon: "🎯", textKey: "localExpertise" as const },
+                  ].map((item, i) => (
+                    <span
+                      key={i}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-gray-300 hover:border-[#F4D03F]/30 hover:bg-[#F4D03F]/5 transition-all duration-300"
+                    >
+                      <span>{item.icon}</span>
+                      {getText(item.textKey)}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
 
-          
+          {/* ── Gold Separator ── */}
+          <div className={`flex items-center justify-center gap-4 mb-20 transition-all duration-700 delay-300 ${isVisible ? "opacity-100 scale-x-100" : "opacity-0 scale-x-0"}`}>
+            <div className="flex-1 max-w-[200px] h-px bg-gradient-to-r from-transparent to-[#F4D03F]/30" />
+            <div className="w-2 h-2 bg-[#F4D03F] rounded-full shadow-[0_0_10px_rgba(244,208,63,0.5)]" />
+            <div className="flex-1 max-w-[200px] h-px bg-gradient-to-l from-transparent to-[#F4D03F]/30" />
+          </div>
 
-       
-        </div>
-        <div className="p-8 grid md:grid-cols-2 gap-8 bg-[var(--color-gold)]">
-              <div className="bg-[var(--color-gray-light)] rounded-2xl p-6">
-                <div className="w-16 h-16 bg-[var(--color-gold)] rounded-2xl flex items-center justify-center mb-4">
-                  <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                  </svg>
-                </div>
-                <h4 className="text-xl font-bold mb-3 text-[var(--color-gold)]">{getText("ourVision")}</h4>
-                <p className="text-[var(--color-gold)] leading-relaxed">
-                  {visionText || (isRTL 
-                    ? "أن نكون الخيار الأول للحلول الإعلانية والتسويق الإلكتروني في المملكة، بمعايير عالمية وهوية سعودية راسخة."
-                    : "To be the first choice for advertising and digital marketing solutions in the Kingdom, with global standards and a strong Saudi identity."
-                  )}
-                </p>
-              </div>
+          {/* ── Vision & Mission ── */}
+          <div className="grid md:grid-cols-2 gap-6 lg:gap-8 max-w-5xl mx-auto">
 
-              <div className="bg-[var(--color-gray-light)] rounded-2xl p-6">
-                <div className="w-16 h-16 bg-[var(--color-gold)] rounded-2xl flex items-center justify-center mb-4">
-                  <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
+            {/* Vision Card */}
+            <div
+              className={`group relative transition-all duration-700 delay-400 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
+              onMouseEnter={() => setActiveCard("vision")}
+              onMouseLeave={() => setActiveCard(null)}
+            >
+              {/* Animated border glow */}
+              <div className={`absolute -inset-[1px] rounded-3xl bg-gradient-to-br from-[#F4D03F]/40 via-transparent to-[#F4D03F]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-[1px]`} />
+
+              <div className="relative bg-[#1a1a1a] rounded-3xl p-8 lg:p-10 h-full border border-white/[0.06] group-hover:border-transparent transition-all duration-500 overflow-hidden">
+                {/* Background glow on hover */}
+                <div className="absolute top-0 right-0 w-40 h-40 bg-[#F4D03F]/[0.03] rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+
+                {/* Number watermark */}
+                <div className={`absolute ${isRTL ? "left-6" : "right-6"} top-4 text-8xl font-black text-white/[0.03] select-none group-hover:text-[#F4D03F]/[0.06] transition-colors duration-700`}>
+                  01
                 </div>
-                <h4 className="text-xl font-bold mb-3 text-[var(--color-gold)]">{getText("ourMission")}</h4>
-                <p className="text-[var(--color-gold)] leading-relaxed">
-                  {missionText || (isRTL
-                    ? "أن نصنع لكل عميل بصمة إعلانية مميزة تجمع بين الإبداع والجودة والسرعة، وتواكب الفعاليات والمناسبات المحلية بروح سعودية أصيلة."
-                    : "To create a distinctive advertising footprint for each client that combines creativity, quality, and speed, keeping up with local events and occasions with an authentic Saudi spirit."
-                  )}
-                </p>
+
+                <div className="relative z-10">
+                  {/* Icon row */}
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#F4D03F] to-[#C49000] flex items-center justify-center shadow-lg shadow-[#F4D03F]/20 group-hover:shadow-[#F4D03F]/40 group-hover:scale-110 transition-all duration-500">
+                      <svg className="w-7 h-7 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="text-2xl font-bold text-white group-hover:text-[#F4D03F] transition-colors duration-300">
+                        {getText("ourVision")}
+                      </h4>
+                      <div className="w-0 group-hover:w-full h-0.5 bg-[#F4D03F]/40 transition-all duration-500 rounded-full mt-1" />
+                    </div>
+                  </div>
+
+                  {/* Text */}
+                  <p className="text-gray-400 leading-relaxed text-[1.05rem] group-hover:text-gray-300 transition-colors duration-300">
+                    {visionText || (isRTL
+                      ? "أن نكون الخيار الأول للحلول الإعلانية والتسويق الإلكتروني في المملكة، بمعايير عالمية وهوية سعودية راسخة."
+                      : "To be the first choice for advertising and digital marketing solutions in the Kingdom, with global standards and a strong Saudi identity."
+                    )}
+                  </p>
+                </div>
               </div>
             </div>
+
+            {/* Mission Card */}
+            <div
+              className={`group relative transition-all duration-700 delay-[600ms] ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
+              onMouseEnter={() => setActiveCard("mission")}
+              onMouseLeave={() => setActiveCard(null)}
+            >
+              {/* Animated border glow */}
+              <div className={`absolute -inset-[1px] rounded-3xl bg-gradient-to-br from-[#F4D03F]/20 via-transparent to-[#F4D03F]/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-[1px]`} />
+
+              <div className="relative bg-[#1a1a1a] rounded-3xl p-8 lg:p-10 h-full border border-white/[0.06] group-hover:border-transparent transition-all duration-500 overflow-hidden">
+                {/* Background glow on hover */}
+                <div className="absolute bottom-0 left-0 w-40 h-40 bg-[#F4D03F]/[0.03] rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+
+                {/* Number watermark */}
+                <div className={`absolute ${isRTL ? "left-6" : "right-6"} top-4 text-8xl font-black text-white/[0.03] select-none group-hover:text-[#F4D03F]/[0.06] transition-colors duration-700`}>
+                  02
+                </div>
+
+                <div className="relative z-10">
+                  {/* Icon row */}
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#F4D03F] to-[#C49000] flex items-center justify-center shadow-lg shadow-[#F4D03F]/20 group-hover:shadow-[#F4D03F]/40 group-hover:scale-110 transition-all duration-500">
+                      <svg className="w-7 h-7 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="text-2xl font-bold text-white group-hover:text-[#F4D03F] transition-colors duration-300">
+                        {getText("ourMission")}
+                      </h4>
+                      <div className="w-0 group-hover:w-full h-0.5 bg-[#F4D03F]/40 transition-all duration-500 rounded-full mt-1" />
+                    </div>
+                  </div>
+
+                  {/* Text */}
+                  <p className="text-gray-400 leading-relaxed text-[1.05rem] group-hover:text-gray-300 transition-colors duration-300">
+                    {missionText || (isRTL
+                      ? "أن نصنع لكل عميل بصمة إعلانية مميزة تجمع بين الإبداع والجودة والسرعة، وتواكب الفعاليات والمناسبات المحلية بروح سعودية أصيلة."
+                      : "To create a distinctive advertising footprint for each client that combines creativity, quality, and speed, keeping up with local events and occasions with an authentic Saudi spirit."
+                    )}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ── Stats Bar ── */}
+          {/* <div
+            ref={statsRef}
+            className={`mt-20 max-w-4xl mx-auto transition-all duration-1000 delay-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
+          >
+            <div className="relative rounded-2xl bg-gradient-to-r from-[#F4D03F]/10 via-[#F4D03F]/5 to-[#F4D03F]/10 border border-[#F4D03F]/10 p-1">
+              <div className="bg-[#111111]/80 backdrop-blur-sm rounded-xl px-6 py-8">
+                <div className="grid grid-cols-3 divide-x divide-white/10">
+                  {[
+                    { value: yearsCount, suffix: "+", label: getText("yearsExperience") },
+                    { value: clientsCount, suffix: "+", label: getText("happyClients") },
+                    { value: projectsCount, suffix: "+", label: getText("completedProjects") },
+                  ].map((stat, i) => (
+                    <div key={i} className="text-center px-4">
+                      <div className="text-3xl lg:text-4xl font-black text-[#F4D03F] tabular-nums">
+                        {stat.value}{stat.suffix}
+                      </div>
+                      <div className="text-sm text-gray-500 mt-1 font-medium">{stat.label}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div> */}
+
+        </div>
       </div>
 
-  
+      {/* ── Bottom Gold Accent Strip ── */}
+      <div className="relative h-1 bg-gradient-to-r from-transparent via-[#F4D03F] to-transparent opacity-40" />
     </section>
   );
 }

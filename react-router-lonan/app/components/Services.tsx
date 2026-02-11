@@ -107,6 +107,11 @@ export function Services({ services = [] }: ServicesProps) {
     <section id="services" className="section bg-[var(--color-gray-light)] relative overflow-hidden" ref={sectionRef}>
       <div className="absolute top-0 right-0 w-96 h-96 bg-[var(--color-gold)]/10 rounded-full blur-3xl -z-10" />
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-[var(--color-gold)]/10 rounded-full blur-3xl -z-10" />
+
+      <div className="absolute inset-0 opacity-[0.03]" style={{
+          backgroundImage: `linear-gradient(#F4D03F 1px, transparent 1px), linear-gradient(90deg, #F4D03F 1px, transparent 1px)`,
+          backgroundSize: "80px 80px",
+        }} />
       
       <div className={`container mx-auto px-4 lg:px-8 transition-all duration-700 ${sectionVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
         {/* <div className="text-center mb-16">
@@ -134,7 +139,7 @@ export function Services({ services = [] }: ServicesProps) {
             >
               <div className="service-icon group-hover:bg-black group-hover:text-[var(--color-gold)]">
                 {service.image ? (
-                  <img src={service.image} alt={t(service.title, service.titleEn)} className="w-18 h-18 object-contain" />
+                  <img src={service.image} alt={t(service.title, service.titleEn)} className="w-98 h-98 object-contain" style={{maxWidth:"183%"}} />
                 ) : (
                   iconMap[service.icon || "default"] || iconMap["default"]
                 )}
@@ -344,6 +349,8 @@ export function Services({ services = [] }: ServicesProps) {
           </div>
         </div>
       )}
+
+      <div className="relative h-1 mt-9 bg-gradient-to-r from-transparent via-[#F4D03F] to-transparent opacity-40" />
     </section>
   );
 }

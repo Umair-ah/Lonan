@@ -7,6 +7,7 @@ interface CompanyInfo {
   about?: string;
   aboutEn?: string;
   logo?: string;
+  logoLight?: string;
   phone1?: string;
   phone2?: string;
   email?: string;
@@ -48,7 +49,7 @@ export function Footer({ companyInfo }: FooterProps) {
             <div className="flex items-center gap-4 mb-6">
               {companyInfo?.logo ? (
                 <img 
-                  src={companyInfo.logo} 
+                  src={companyInfo.logoLight} 
                   alt={companyName} 
                   className="w-16 h-16 object-contain"
                 />
@@ -64,10 +65,10 @@ export function Footer({ companyInfo }: FooterProps) {
                   </svg>
                 </div>
               )}
-              <div>
+              {/* <div>
                 <h3 className="text-2xl font-bold">{companyName}</h3>
                 <p className="text-[var(--color-gold)]">{isRTL ? "للدعاية والإعلان" : "Advertising"}</p>
-              </div>
+              </div> */}
             </div>
             <p className="text-gray-400 mb-6 max-w-md">
               {aboutText 
@@ -126,7 +127,7 @@ export function Footer({ companyInfo }: FooterProps) {
             <ul className="space-y-3">
               {[
                 { label: getText("home"), href: "#home" },
-                // { label: getText("about"), href: "#about" },
+                { label: getText("about"), href: "#about" },
                 { label: getText("services"), href: "#services" },
                 // { label: getText("partners"), href: "#partners" },
                 { label: getText("contact"), href: "#contact" },
