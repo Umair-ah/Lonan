@@ -41,7 +41,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <LanguageProvider>
-          {children}
+        {children}
         </LanguageProvider>
         <ScrollRestoration />
         <Scripts />
@@ -78,11 +78,11 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
         <a href="/" className="btn btn-primary">
           العودة للرئيسية
         </a>
-        {stack && (
+      {stack && (
           <pre className="mt-8 p-4 bg-[var(--color-black)] text-white rounded-lg overflow-x-auto text-left text-sm">
-            <code>{stack}</code>
-          </pre>
-        )}
+          <code>{stack}</code>
+        </pre>
+      )}
       </div>
     </main>
   );

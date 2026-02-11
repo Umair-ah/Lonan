@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useLanguage, useTranslation } from "~/context/LanguageContext";
 
 interface CompanyInfo {
@@ -16,6 +17,12 @@ interface HeroProps {
 export function Hero({ companyInfo }: HeroProps) {
   const { t, isRTL } = useLanguage();
   const { getText } = useTranslation();
+  const [heroLoaded, setHeroLoaded] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setHeroLoaded(true), 200);
+    return () => clearTimeout(timer);
+  }, []);
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -30,7 +37,7 @@ export function Hero({ companyInfo }: HeroProps) {
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
       style={{
         background: companyInfo?.heroImage 
-          ? `#F4D03F;, url(${companyInfo.heroImage}) center/cover`
+          ? `linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.5)), url(${companyInfo.heroImage}) center/cover no-repeat`
           : "#F4D03F",
       }}
     >
@@ -42,22 +49,22 @@ export function Hero({ companyInfo }: HeroProps) {
       </div>
 
       {/* Decorative Elements */}
-      <div className="absolute top-20 right-10 w-32 h-32 bg-black/10 rounded-full blur-3xl" />
-      <div className="absolute bottom-20 left-10 w-48 h-48 bg-white/20 rounded-full blur-3xl" />
+      <div className={`absolute top-20 right-10 w-32 h-32 bg-black/10 rounded-full blur-3xl transition-opacity duration-1000 ${heroLoaded ? "opacity-100" : "opacity-0"}`} />
+      <div className={`absolute bottom-20 left-10 w-48 h-48 bg-white/20 rounded-full blur-3xl transition-opacity duration-1000 delay-200 ${heroLoaded ? "opacity-100" : "opacity-0"}`} />
       
       {/* Floating geometric shapes */}
-      <div className="absolute top-1/4 left-1/4 w-16 h-16 border-4 border-black/20 rounded-lg animate-float" style={{ animationDelay: "0s" }} />
-      <div className="absolute top-1/3 right-1/4 w-12 h-12 bg-black/10 rounded-full animate-float" style={{ animationDelay: "1s" }} />
-      <div className="absolute bottom-1/4 right-1/3 w-20 h-20 border-4 border-white/30 rounded-full animate-float" style={{ animationDelay: "2s" }} />
+      <div className={`absolute top-1/4 left-1/4 w-16 h-16 border-4 border-black/20 rounded-lg animate-float transition-opacity duration-1000 delay-500 ${heroLoaded ? "opacity-100" : "opacity-0"}`} style={{ animationDelay: "0s" }} />
+      <div className={`absolute top-1/3 right-1/4 w-12 h-12 bg-black/10 rounded-full animate-float transition-opacity duration-1000 delay-700 ${heroLoaded ? "opacity-100" : "opacity-0"}`} style={{ animationDelay: "1s" }} />
+      <div className={`absolute bottom-1/4 right-1/3 w-20 h-20 border-4 border-white/30 rounded-full animate-float transition-opacity duration-1000 delay-900 ${heroLoaded ? "opacity-100" : "opacity-0"}`} style={{ animationDelay: "2s" }} />
 
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
         <div className="grid gap-12 place-items-center">
           {/* Content */}
-          <div className={`text-center ${isRTL ? "lg:text-right" : "lg:text-left"} animate-fadeInRight`}>
-            <div className="inline-flex items-center gap-2 bg-black/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
+          <div className={`text-center ${isRTL ? "lg:text-right" : "lg:text-left"} transition-all duration-1000 ${heroLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+            {/* <div className="inline-flex items-center gap-2 bg-black/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
               <span className="w-2 h-2 bg-black rounded-full animate-pulse" />
               <span className="text-sm font-medium text-black">{getText("since20Years")}</span>
-            </div>
+            </div> */}
             
             {/* <h1 className="heading-xl text-black mb-6">
               <span className="block">
@@ -68,7 +75,11 @@ export function Hero({ companyInfo }: HeroProps) {
               </span>
             </h1> */}
 
-            <img src={companyInfo?.logo} alt={t(companyInfo?.companyName, companyInfo?.companyNameEn) || "Logo"} className="w-full h-auto object-contain" />
+            <img 
+              src={companyInfo?.logo} 
+              alt={t(companyInfo?.companyName, companyInfo?.companyNameEn) || "Logo"} 
+              className={`w-full h-auto object-contain transition-all duration-1000 delay-300 ${heroLoaded ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}
+            />
             
             {/* <p className="text-xl lg:text-2xl text-black/80 mb-8 max-w-xl mx-auto lg:mx-0">
               {t(companyInfo?.tagline, companyInfo?.taglineEn) || getText("oneStopShop")}
@@ -150,7 +161,7 @@ export function Hero({ companyInfo }: HeroProps) {
       </div>
 
       {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+      {/* <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
         <button
           onClick={() => scrollToSection("about")}
           className="flex flex-col items-center text-black/70 hover:text-black transition-colors"
@@ -160,7 +171,7 @@ export function Hero({ companyInfo }: HeroProps) {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
           </svg>
         </button>
-      </div>
+      </div> */}
     </section>
   );
 }

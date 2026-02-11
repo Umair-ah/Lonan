@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLanguage, useTranslation } from "~/context/LanguageContext";
+import { useScrollReveal } from "~/hooks/useScrollReveal";
 
 interface ServiceFeature {
   text?: string;
@@ -25,13 +26,20 @@ interface ServicesProps {
 
 const iconMap: Record<string, React.ReactNode> = {
   "digital-marketing": (
-    <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+    <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"/>
+      <path d="M21 21l-4.35-4.35"/>
+      <path d="M8 13l2-2 1.5 1.5 2.5-2.5"/>
     </svg>
   ),
   "outdoor-signage": (
-    <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+    <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="3" width="20" height="12" rx="2" ry="2"/>
+      <path d="M8 15v6"/>
+      <path d="M16 15v6"/>
+      <path d="M6 3V1"/>
+      <path d="M12 3V1"/>
+      <path d="M18 3V1"/>
     </svg>
   ),
   "printing": (
@@ -66,6 +74,7 @@ export function Services({ services = [] }: ServicesProps) {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const { t, isRTL } = useLanguage();
   const { getText } = useTranslation();
+  const { ref: sectionRef, isVisible: sectionVisible } = useScrollReveal();
 
   // Reset active image when service changes
   const handleSelectService = (service: Service) => {
@@ -95,12 +104,12 @@ export function Services({ services = [] }: ServicesProps) {
   }
 
   return (
-    <section id="services" className="section bg-[var(--color-gray-light)] relative overflow-hidden">
+    <section id="services" className="section bg-[var(--color-gray-light)] relative overflow-hidden" ref={sectionRef}>
       <div className="absolute top-0 right-0 w-96 h-96 bg-[var(--color-gold)]/10 rounded-full blur-3xl -z-10" />
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-[var(--color-gold)]/10 rounded-full blur-3xl -z-10" />
       
-      <div className="container mx-auto px-4 lg:px-8">
-        <div className="text-center mb-16">
+      <div className={`container mx-auto px-4 lg:px-8 transition-all duration-700 ${sectionVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
+        {/* <div className="text-center mb-16">
           <span className="section-title">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
@@ -111,19 +120,21 @@ export function Services({ services = [] }: ServicesProps) {
           <p className="text-[var(--color-gray-dark)] mt-4 max-w-2xl mx-auto">
             {getText("serviceDescription")}
           </p>
-        </div>
+        </div> */}
 
         <div className="services-grid">
           {services.map((service, index) => (
             <div
               key={service._id}
-              className="card group cursor-pointer hover:border-[var(--color-gold)] border-2 border-transparent"
-              style={{ animationDelay: `${index * 0.1}s` }}
+              className={`card group cursor-pointer hover:border-[var(--color-gold)] border-2 border-transparent card-hover-lift image-shine transition-all duration-700 ${
+                sectionVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+              }`}
+              style={{ transitionDelay: `${index * 0.15 + 0.2}s` }}
               onClick={() => handleSelectService(service)}
             >
               <div className="service-icon group-hover:bg-black group-hover:text-[var(--color-gold)]">
                 {service.image ? (
-                  <img src={service.image} alt={t(service.title, service.titleEn)} className="w-10 h-10 object-contain" />
+                  <img src={service.image} alt={t(service.title, service.titleEn)} className="w-18 h-18 object-contain" />
                 ) : (
                   iconMap[service.icon || "default"] || iconMap["default"]
                 )}
@@ -157,7 +168,7 @@ export function Services({ services = [] }: ServicesProps) {
         </div>
 
         {/* Target Audience */}
-        <div className="mt-20 bg-[var(--color-gold)] rounded-3xl p-8 lg:p-12">
+        {/* <div className="mt-20 bg-[var(--color-gold)] rounded-3xl p-8 lg:p-12">
           <h3 className="text-2xl font-bold text-black text-center mb-8">{getText("targetAudience")}</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
@@ -173,7 +184,7 @@ export function Services({ services = [] }: ServicesProps) {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* Service Detail Modal */}

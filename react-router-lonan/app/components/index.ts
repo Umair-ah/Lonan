@@ -7,3 +7,4 @@ export { Contact } from "./Contact";
 export { Footer } from "./Footer";
 export { WhatsAppButton } from "./WhatsAppButton";
 export { LanguageToggle } from "./LanguageToggle";
+export { LoadingScreen } from "./LoadingScreen";

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { Route } from "./+types/home";
 import { client } from "~/sanity/client";
 import {
@@ -9,6 +10,7 @@ import {
   Contact,
   Footer,
   WhatsAppButton,
+  LoadingScreen,
 } from "~/components";
 
 // GROQ Queries
@@ -127,19 +129,25 @@ export function meta({ data }: Route.MetaArgs) {
 
 export default function HomePage({ loaderData }: Route.ComponentProps) {
   const { companyInfo, services, partners, projects, testimonials } = loaderData;
+  const [isLoading, setIsLoading] = useState(true);
 
   return (
     <>
-      <Header companyInfo={companyInfo} />
-      <main>
-        <Hero companyInfo={companyInfo} />
-        <About companyInfo={companyInfo} />
-        <Services services={services} />
-        <Partners partners={partners} projects={projects} />
-        <Contact companyInfo={companyInfo} />
-      </main>
-      <Footer companyInfo={companyInfo} />
-      <WhatsAppButton whatsapp={companyInfo?.whatsapp} />
+      {isLoading && (
+        <LoadingScreen onLoadingComplete={() => setIsLoading(false)} companyInfo={companyInfo} services={services} />
+      )}
+      <div className={`transition-opacity duration-500 ${isLoading ? "opacity-0" : "opacity-100"}`}>
+        <Header companyInfo={companyInfo} />
+        <main>
+          <Hero companyInfo={companyInfo} />
+          {/* <About companyInfo={companyInfo} /> */}
+          <Services services={services} />
+          {/* <Partners partners={partners} projects={projects} /> */}
+          <Contact companyInfo={companyInfo} />
+        </main>
+        <Footer companyInfo={companyInfo} />
+        <WhatsAppButton whatsapp={companyInfo?.whatsapp} />
+      </div>
     </>
   );
 }
