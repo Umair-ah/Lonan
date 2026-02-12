@@ -43,6 +43,9 @@ export function About({ companyInfo }: AboutProps) {
   const { ref: sectionRef, isVisible } = useScrollReveal({ threshold: 0.05 });
   const { ref: statsRef, isVisible: statsVisible } = useScrollReveal({ threshold: 0.3 });
   const [activeCard, setActiveCard] = useState<"vision" | "mission" | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isVisionModalOpen, setIsVisionModalOpen] = useState(false);
+  const [isMissionModalOpen, setIsMissionModalOpen] = useState(false);
 
   const aboutText = t(companyInfo?.about, companyInfo?.aboutEn);
   const visionText = t(companyInfo?.vision, companyInfo?.visionEn);
@@ -54,6 +57,31 @@ export function About({ companyInfo }: AboutProps) {
   const yearsCount = useCounter(20, 2000, statsVisible);
   const clientsCount = useCounter(500, 2500, statsVisible);
   const projectsCount = useCounter(1000, 3000, statsVisible);
+
+  // Close modals on Escape key and prevent body scroll
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        if (isVisionModalOpen) setIsVisionModalOpen(false);
+        else if (isMissionModalOpen) setIsMissionModalOpen(false);
+        else if (isModalOpen) setIsModalOpen(false);
+      }
+    };
+    
+    const isAnyModalOpen = isModalOpen || isVisionModalOpen || isMissionModalOpen;
+    
+    if (isAnyModalOpen) {
+      document.body.style.overflow = "hidden";
+      window.addEventListener("keydown", handleEscape);
+    } else {
+      document.body.style.overflow = "";
+    }
+    
+    return () => {
+      window.removeEventListener("keydown", handleEscape);
+      document.body.style.overflow = "";
+    };
+  }, [isModalOpen, isVisionModalOpen, isMissionModalOpen]);
 
   if (!hasContent) {
     return (
@@ -117,8 +145,11 @@ export function About({ companyInfo }: AboutProps) {
                 </svg>
               </div> */}
 
-              {/* Title text with background */}
-              <div className="relative px-8 pt-6 pb-4 bg-black/60 backdrop-blur-sm rounded-2xl border border-[#F4D03F]/20">
+              {/* Title text with background - Clickable */}
+              <div 
+                className="relative px-8 pt-6 pb-4 bg-black/60 backdrop-blur-sm rounded-2xl border border-[#F4D03F]/20 cursor-pointer hover:border-[#F4D03F]/40 hover:bg-black/80 transition-all duration-300"
+                onClick={() => setIsModalOpen(true)}
+              >
                 <h2 className="text-3xl lg:text-4xl font-black text-[#F4D03F] tracking-tight">
                   {getText("whoWeAre")}
                 </h2>
@@ -136,225 +167,300 @@ export function About({ companyInfo }: AboutProps) {
 
             {/* Subtitle/Description */}
             <p className="mt-6 text-sm text-gray-400 font-medium uppercase tracking-[0.2em]">
-              {isRTL ? "تعرف على رؤيتنا ورسالتنا" : "Discover Our Vision & Mission"}
+              {isRTL ? "انقر للتعرف علينا" : "Click to Discover More"}
             </p>
           </div>
 
-          {/* ── Main Content: Logo + About Text ── */}
-          <div className={`grid lg:grid-cols-5 gap-10 lg:gap-16 items-center mb-20 transition-all duration-1000 delay-200 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
-
-            {/* Logo Side (2 cols) */}
-            <div className={`lg:col-span-2 flex justify-center ${isRTL ? "lg:order-2" : "lg:order-1"}`}>
-              <div className="relative group">
-                {/* Animated ring */}
-                <div className="absolute -inset-4 rounded-3xl opacity-60 group-hover:opacity-100 transition-opacity duration-700">
-                  <div className="absolute inset-0 rounded-3xl border-2 border-[#F4D03F]/20 animate-[spin_20s_linear_infinite]"
-                    style={{ clipPath: "polygon(0 0, 50% 0, 50% 100%, 0 100%)" }} />
-                  <div className="absolute inset-0 rounded-3xl border-2 border-[#F4D03F]/10 animate-[spin_25s_linear_infinite_reverse]"
-                    style={{ clipPath: "polygon(50% 0, 100% 0, 100% 100%, 50% 100%)" }} />
-                </div>
-
-                {/* Logo container */}
-                <div className="relative w-56 h-56 lg:w-72 lg:h-72">
-                  {companyInfo?.logo ? (
-                    <img
-                      src={companyInfo.logoLight}
-                      alt={companyName || "Logo"}
-                      className="w-full h-full object-contain drop-shadow-[0_0_30px_rgba(244,208,63,0.15)] group-hover:scale-105 transition-transform duration-500"
-                    />
-                  ) : (
-                    <div className="text-5xl lg:text-6xl font-black text-[#F4D03F]">
-                      {(companyName || "L").charAt(0)}
-                    </div>
-                  )}
-
-                  {/* Corner accents */}
-                  {/* <div className="absolute top-3 left-3 w-5 h-5 border-t-2 border-l-2 border-[#F4D03F]/40 rounded-tl-lg" />
-                  <div className="absolute top-3 right-3 w-5 h-5 border-t-2 border-r-2 border-[#F4D03F]/40 rounded-tr-lg" />
-                  <div className="absolute bottom-3 left-3 w-5 h-5 border-b-2 border-l-2 border-[#F4D03F]/40 rounded-bl-lg" />
-                  <div className="absolute bottom-3 right-3 w-5 h-5 border-b-2 border-r-2 border-[#F4D03F]/40 rounded-br-lg" /> */}
-                </div>
-
-                {/* Glow effect behind */}
-                <div className="absolute inset-0 rounded-3xl bg-[#F4D03F]/5 blur-2xl -z-10 group-hover:bg-[#F4D03F]/10 transition-all duration-500" />
-              </div>
-            </div>
-
-            {/* About Text Side (3 cols) */}
-            <div className={`lg:col-span-3 ${isRTL ? "lg:order-1" : "lg:order-2"}`}>
-              <div className="space-y-6">
-                {/* Company name as heading */}
-                <div>
-                  <h2 className="text-3xl lg:text-5xl font-black text-white mb-2 leading-tight">
-                    {companyName || (isRTL ? "لونان" : "Lonan")}
-                  </h2>
-                  <div className="flex items-center gap-3 mt-3">
-                    <div className="w-12 h-1 bg-[#F4D03F] rounded-full" />
-                    <span className="text-[#F4D03F] text-sm font-semibold uppercase tracking-widest">
-                      {isRTL ? "للدعاية والإعلان" : "Advertising Agency"}
-                    </span>
-                  </div>
-                </div>
-
-                {/* About paragraph */}
-                {aboutText && (
-                  <p className="text-gray-400 text-lg lg:text-xl leading-relaxed whitespace-pre-line">
-                    {aboutText}
-                  </p>
-                )}
-
-                {/* Quick highlights */}
-                <div className="flex flex-wrap gap-3 pt-2">
-                  {[
-                    { icon: "⚡", textKey: "fastExecution" as const },
-                    { icon: "💎", textKey: "highQuality" as const },
-                    { icon: "🎯", textKey: "localExpertise" as const },
-                  ].map((item, i) => (
-                    <span
-                      key={i}
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-gray-300 hover:border-[#F4D03F]/30 hover:bg-[#F4D03F]/5 transition-all duration-300"
-                    >
-                      <span>{item.icon}</span>
-                      {getText(item.textKey)}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* ── Gold Separator ── */}
-          <div className={`flex items-center justify-center gap-4 mb-20 transition-all duration-700 delay-300 ${isVisible ? "opacity-100 scale-x-100" : "opacity-0 scale-x-0"}`}>
-            <div className="flex-1 max-w-[200px] h-px bg-gradient-to-r from-transparent to-[#F4D03F]/30" />
-            <div className="w-2 h-2 bg-[#F4D03F] rounded-full shadow-[0_0_10px_rgba(244,208,63,0.5)]" />
-            <div className="flex-1 max-w-[200px] h-px bg-gradient-to-l from-transparent to-[#F4D03F]/30" />
-          </div>
-
-          {/* ── Vision & Mission ── */}
-          <div className="grid md:grid-cols-2 gap-6 lg:gap-8 max-w-5xl mx-auto">
-
-            {/* Vision Card */}
-            <div
-              className={`group relative transition-all duration-700 delay-400 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
-              onMouseEnter={() => setActiveCard("vision")}
-              onMouseLeave={() => setActiveCard(null)}
+          {/* ── Vision & Mission Buttons ── */}
+          <div className={`flex flex-col sm:flex-row items-center justify-center gap-6 mt-12 transition-all duration-700 delay-200 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
+            {/* Vision Button */}
+            <button
+              onClick={() => setIsVisionModalOpen(true)}
+              className="group relative px-8 py-4 bg-gradient-to-br from-[#F4D03F] to-[#C49000] text-black font-bold text-lg rounded-2xl shadow-lg shadow-[#F4D03F]/20 hover:shadow-[#F4D03F]/40 hover:scale-105 transition-all duration-300 flex items-center gap-3"
             >
-              {/* Animated border glow */}
-              <div className={`absolute -inset-[1px] rounded-3xl bg-gradient-to-br from-[#F4D03F]/40 via-transparent to-[#F4D03F]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-[1px]`} />
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+              {getText("ourVision")}
+            </button>
 
-              <div className="relative bg-[#1a1a1a] rounded-3xl p-8 lg:p-10 h-full border border-white/[0.06] group-hover:border-transparent transition-all duration-500 overflow-hidden">
-                {/* Background glow on hover */}
-                <div className="absolute top-0 right-0 w-40 h-40 bg-[#F4D03F]/[0.03] rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-
-                {/* Number watermark */}
-                <div className={`absolute ${isRTL ? "left-6" : "right-6"} top-4 text-8xl font-black text-white/[0.03] select-none group-hover:text-[#F4D03F]/[0.06] transition-colors duration-700`}>
-                  01
-                </div>
-
-                <div className="relative z-10">
-                  {/* Icon row */}
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#F4D03F] to-[#C49000] flex items-center justify-center shadow-lg shadow-[#F4D03F]/20 group-hover:shadow-[#F4D03F]/40 group-hover:scale-110 transition-all duration-500">
-                      <svg className="w-7 h-7 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <h4 className="text-2xl font-bold text-white group-hover:text-[#F4D03F] transition-colors duration-300">
-                        {getText("ourVision")}
-                      </h4>
-                      <div className="w-0 group-hover:w-full h-0.5 bg-[#F4D03F]/40 transition-all duration-500 rounded-full mt-1" />
-                    </div>
-                  </div>
-
-                  {/* Text */}
-                  <p className="text-gray-400 leading-relaxed text-[1.05rem] group-hover:text-gray-300 transition-colors duration-300">
-                    {visionText || (isRTL
-                      ? "أن نكون الخيار الأول للحلول الإعلانية والتسويق الإلكتروني في المملكة، بمعايير عالمية وهوية سعودية راسخة."
-                      : "To be the first choice for advertising and digital marketing solutions in the Kingdom, with global standards and a strong Saudi identity."
-                    )}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Mission Card */}
-            <div
-              className={`group relative transition-all duration-700 delay-[600ms] ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
-              onMouseEnter={() => setActiveCard("mission")}
-              onMouseLeave={() => setActiveCard(null)}
+            {/* Mission Button */}
+            <button
+              onClick={() => setIsMissionModalOpen(true)}
+              className="group relative px-8 py-4 bg-gradient-to-br from-[#F4D03F] to-[#C49000] text-black font-bold text-lg rounded-2xl shadow-lg shadow-[#F4D03F]/20 hover:shadow-[#F4D03F]/40 hover:scale-105 transition-all duration-300 flex items-center gap-3"
             >
-              {/* Animated border glow */}
-              <div className={`absolute -inset-[1px] rounded-3xl bg-gradient-to-br from-[#F4D03F]/20 via-transparent to-[#F4D03F]/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-[1px]`} />
-
-              <div className="relative bg-[#1a1a1a] rounded-3xl p-8 lg:p-10 h-full border border-white/[0.06] group-hover:border-transparent transition-all duration-500 overflow-hidden">
-                {/* Background glow on hover */}
-                <div className="absolute bottom-0 left-0 w-40 h-40 bg-[#F4D03F]/[0.03] rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-
-                {/* Number watermark */}
-                <div className={`absolute ${isRTL ? "left-6" : "right-6"} top-4 text-8xl font-black text-white/[0.03] select-none group-hover:text-[#F4D03F]/[0.06] transition-colors duration-700`}>
-                  02
-                </div>
-
-                <div className="relative z-10">
-                  {/* Icon row */}
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#F4D03F] to-[#C49000] flex items-center justify-center shadow-lg shadow-[#F4D03F]/20 group-hover:shadow-[#F4D03F]/40 group-hover:scale-110 transition-all duration-500">
-                      <svg className="w-7 h-7 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <h4 className="text-2xl font-bold text-white group-hover:text-[#F4D03F] transition-colors duration-300">
-                        {getText("ourMission")}
-                      </h4>
-                      <div className="w-0 group-hover:w-full h-0.5 bg-[#F4D03F]/40 transition-all duration-500 rounded-full mt-1" />
-                    </div>
-                  </div>
-
-                  {/* Text */}
-                  <p className="text-gray-400 leading-relaxed text-[1.05rem] group-hover:text-gray-300 transition-colors duration-300">
-                    {missionText || (isRTL
-                      ? "أن نصنع لكل عميل بصمة إعلانية مميزة تجمع بين الإبداع والجودة والسرعة، وتواكب الفعاليات والمناسبات المحلية بروح سعودية أصيلة."
-                      : "To create a distinctive advertising footprint for each client that combines creativity, quality, and speed, keeping up with local events and occasions with an authentic Saudi spirit."
-                    )}
-                  </p>
-                </div>
-              </div>
-            </div>
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              {getText("ourMission")}
+            </button>
           </div>
-
-          {/* ── Stats Bar ── */}
-          {/* <div
-            ref={statsRef}
-            className={`mt-20 max-w-4xl mx-auto transition-all duration-1000 delay-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
-          >
-            <div className="relative rounded-2xl bg-gradient-to-r from-[#F4D03F]/10 via-[#F4D03F]/5 to-[#F4D03F]/10 border border-[#F4D03F]/10 p-1">
-              <div className="bg-[#111111]/80 backdrop-blur-sm rounded-xl px-6 py-8">
-                <div className="grid grid-cols-3 divide-x divide-white/10">
-                  {[
-                    { value: yearsCount, suffix: "+", label: getText("yearsExperience") },
-                    { value: clientsCount, suffix: "+", label: getText("happyClients") },
-                    { value: projectsCount, suffix: "+", label: getText("completedProjects") },
-                  ].map((stat, i) => (
-                    <div key={i} className="text-center px-4">
-                      <div className="text-3xl lg:text-4xl font-black text-[#F4D03F] tabular-nums">
-                        {stat.value}{stat.suffix}
-                      </div>
-                      <div className="text-sm text-gray-500 mt-1 font-medium">{stat.label}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div> */}
 
         </div>
       </div>
 
       {/* ── Bottom Gold Accent Strip ── */}
       <div className="relative h-1 bg-gradient-to-r from-transparent via-[#F4D03F] to-transparent opacity-40" />
+
+      {/* ── About Content Modal ── */}
+      {isModalOpen && (
+        <div
+          className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4"
+          onClick={() => setIsModalOpen(false)}
+        >
+          <div
+            className="bg-gradient-to-b from-[#1a1a1a] to-black rounded-3xl max-w-6xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-[#F4D03F]/20 animate-scaleIn"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="bg-gradient-to-r from-[#F4D03F] via-[#e6c555] to-[#F4D03F] p-6 rounded-t-3xl flex items-center justify-between sticky top-0 z-20">
+              <h3 className="text-2xl font-bold text-black">{getText("whoWeAre")}</h3>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="w-10 h-10 rounded-full bg-black/20 hover:bg-black/40 flex items-center justify-center transition-colors duration-200"
+              >
+                <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-8 lg:p-12">
+              {/* ── Main Content: Logo + About Text ── */}
+              <div className="grid lg:grid-cols-5 gap-10 lg:gap-16 items-center mb-20">
+                {/* Logo Side (2 cols) */}
+                <div className={`lg:col-span-2 flex justify-center ${isRTL ? "lg:order-2" : "lg:order-1"}`}>
+                  <div className="relative group">
+                    {/* Animated ring */}
+                    <div className="absolute -inset-4 rounded-3xl opacity-60 group-hover:opacity-100 transition-opacity duration-700">
+                      <div className="absolute inset-0 rounded-3xl border-2 border-[#F4D03F]/20 animate-[spin_20s_linear_infinite]"
+                        style={{ clipPath: "polygon(0 0, 50% 0, 50% 100%, 0 100%)" }} />
+                      <div className="absolute inset-0 rounded-3xl border-2 border-[#F4D03F]/10 animate-[spin_25s_linear_infinite_reverse]"
+                        style={{ clipPath: "polygon(50% 0, 100% 0, 100% 100%, 50% 100%)" }} />
+                    </div>
+
+                    {/* Logo container */}
+                    <div className="relative w-56 h-56 lg:w-72 lg:h-72">
+                      {companyInfo?.logo ? (
+                        <img
+                          src={companyInfo.logoLight}
+                          alt={companyName || "Logo"}
+                          className="w-full h-full object-contain drop-shadow-[0_0_30px_rgba(244,208,63,0.15)] group-hover:scale-105 transition-transform duration-500"
+                        />
+                      ) : (
+                        <div className="text-5xl lg:text-6xl font-black text-[#F4D03F]">
+                          {(companyName || "L").charAt(0)}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Glow effect behind */}
+                    <div className="absolute inset-0 rounded-3xl bg-[#F4D03F]/5 blur-2xl -z-10 group-hover:bg-[#F4D03F]/10 transition-all duration-500" />
+                  </div>
+                </div>
+
+                {/* About Text Side (3 cols) */}
+                <div className={`lg:col-span-3 ${isRTL ? "lg:order-1" : "lg:order-2"}`}>
+                  <div className="space-y-6">
+                    {/* Company name as heading */}
+                    <div>
+                      <h2 className="text-3xl lg:text-5xl font-black text-white mb-2 leading-tight">
+                        {companyName || (isRTL ? "لونان" : "Lonan")}
+                      </h2>
+                      <div className="flex items-center gap-3 mt-3">
+                        <div className="w-12 h-1 bg-[#F4D03F] rounded-full" />
+                        <span className="text-[#F4D03F] text-sm font-semibold uppercase tracking-widest">
+                          {isRTL ? "للدعاية والإعلان" : "Advertising Agency"}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* About paragraph */}
+                    {aboutText && (
+                      <p className="text-gray-400 text-lg lg:text-xl leading-relaxed whitespace-pre-line">
+                        {aboutText}
+                      </p>
+                    )}
+
+                    {/* Quick highlights */}
+                    <div className="flex flex-wrap gap-3 pt-2">
+                      {[
+                        { icon: "⚡", textKey: "fastExecution" as const },
+                        { icon: "💎", textKey: "highQuality" as const },
+                        { icon: "🎯", textKey: "localExpertise" as const },
+                      ].map((item, i) => (
+                        <span
+                          key={i}
+                          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-gray-300 hover:border-[#F4D03F]/30 hover:bg-[#F4D03F]/5 transition-all duration-300"
+                        >
+                          <span>{item.icon}</span>
+                          {getText(item.textKey)}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Vision Modal ── */}
+      {isVisionModalOpen && (
+        <div
+          className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4"
+          onClick={() => setIsVisionModalOpen(false)}
+        >
+          <div
+            className="bg-gradient-to-b from-[#1a1a1a] to-black rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-[#F4D03F]/20 animate-scaleIn"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="bg-gradient-to-r from-[#F4D03F] via-[#e6c555] to-[#F4D03F] p-6 rounded-t-3xl flex items-center justify-between sticky top-0 z-20">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-2xl bg-black/20 flex items-center justify-center">
+                  <svg className="w-7 h-7 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-bold text-black">{getText("ourVision")}</h3>
+              </div>
+              <button
+                onClick={() => setIsVisionModalOpen(false)}
+                className="w-10 h-10 rounded-full bg-black/20 hover:bg-black/40 flex items-center justify-center transition-colors duration-200"
+              >
+                <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-8 lg:p-12">
+              <div className="group relative max-w-3xl mx-auto">
+                {/* Animated border glow */}
+                <div className="absolute -inset-[1px] rounded-3xl bg-gradient-to-br from-[#F4D03F]/40 via-transparent to-[#F4D03F]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-[1px]" />
+
+                <div className="relative bg-[#1a1a1a] rounded-3xl p-8 lg:p-10 border border-white/[0.06] group-hover:border-transparent transition-all duration-500 overflow-hidden">
+                  {/* Background glow */}
+                  <div className="absolute top-0 right-0 w-40 h-40 bg-[#F4D03F]/[0.03] rounded-full blur-3xl" />
+
+                  {/* Number watermark */}
+                  <div className={`absolute ${isRTL ? "left-6" : "right-6"} top-4 text-8xl font-black text-white/[0.03] select-none`}>
+                    01
+                  </div>
+
+                  <div className="relative z-10">
+                    {/* Icon row */}
+                    <div className="flex items-center gap-4 mb-6">
+                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#F4D03F] to-[#C49000] flex items-center justify-center shadow-lg shadow-[#F4D03F]/20">
+                        <svg className="w-7 h-7 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <h4 className="text-2xl font-bold text-[#F4D03F]">
+                          {getText("ourVision")}
+                        </h4>
+                        <div className="w-full h-0.5 bg-[#F4D03F]/40 rounded-full mt-1" />
+                      </div>
+                    </div>
+
+                    {/* Text */}
+                    <p className="text-gray-300 leading-relaxed text-lg">
+                      {visionText || (isRTL
+                        ? "أن نكون الخيار الأول للحلول الإعلانية والتسويق الإلكتروني في المملكة، بمعايير عالمية وهوية سعودية راسخة."
+                        : "To be the first choice for advertising and digital marketing solutions in the Kingdom, with global standards and a strong Saudi identity."
+                      )}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Mission Modal ── */}
+      {isMissionModalOpen && (
+        <div
+          className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4"
+          onClick={() => setIsMissionModalOpen(false)}
+        >
+          <div
+            className="bg-gradient-to-b from-[#1a1a1a] to-black rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-[#F4D03F]/20 animate-scaleIn"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="bg-gradient-to-r from-[#F4D03F] via-[#e6c555] to-[#F4D03F] p-6 rounded-t-3xl flex items-center justify-between sticky top-0 z-20">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-2xl bg-black/20 flex items-center justify-center">
+                  <svg className="w-7 h-7 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-bold text-black">{getText("ourMission")}</h3>
+              </div>
+              <button
+                onClick={() => setIsMissionModalOpen(false)}
+                className="w-10 h-10 rounded-full bg-black/20 hover:bg-black/40 flex items-center justify-center transition-colors duration-200"
+              >
+                <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-8 lg:p-12">
+              <div className="group relative max-w-3xl mx-auto">
+                {/* Animated border glow */}
+                <div className="absolute -inset-[1px] rounded-3xl bg-gradient-to-br from-[#F4D03F]/20 via-transparent to-[#F4D03F]/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-[1px]" />
+
+                <div className="relative bg-[#1a1a1a] rounded-3xl p-8 lg:p-10 border border-white/[0.06] group-hover:border-transparent transition-all duration-500 overflow-hidden">
+                  {/* Background glow */}
+                  <div className="absolute bottom-0 left-0 w-40 h-40 bg-[#F4D03F]/[0.03] rounded-full blur-3xl" />
+
+                  {/* Number watermark */}
+                  <div className={`absolute ${isRTL ? "left-6" : "right-6"} top-4 text-8xl font-black text-white/[0.03] select-none`}>
+                    02
+                  </div>
+
+                  <div className="relative z-10">
+                    {/* Icon row */}
+                    <div className="flex items-center gap-4 mb-6">
+                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#F4D03F] to-[#C49000] flex items-center justify-center shadow-lg shadow-[#F4D03F]/20">
+                        <svg className="w-7 h-7 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <h4 className="text-2xl font-bold text-[#F4D03F]">
+                          {getText("ourMission")}
+                        </h4>
+                        <div className="w-full h-0.5 bg-[#F4D03F]/40 rounded-full mt-1" />
+                      </div>
+                    </div>
+
+                    {/* Text */}
+                    <p className="text-gray-300 leading-relaxed text-lg">
+                      {missionText || (isRTL
+                        ? "أن نصنع لكل عميل بصمة إعلانية مميزة تجمع بين الإبداع والجودة والسرعة، وتواكب الفعاليات والمناسبات المحلية بروح سعودية أصيلة."
+                        : "To create a distinctive advertising footprint for each client that combines creativity, quality, and speed, keeping up with local events and occasions with an authentic Saudi spirit."
+                      )}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

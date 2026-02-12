@@ -148,7 +148,7 @@ export function Hero({ companyInfo }: HeroProps) {
           </div>
 
           {/* ── Company Name & Tagline ── */}
-          <div className={`text-center max-w-4xl mx-auto mb-12 transition-all duration-1000 delay-700 ${heroLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+          {/* <div className={`text-center max-w-4xl mx-auto mb-12 transition-all duration-1000 delay-700 ${heroLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             <h1 className="text-5xl lg:text-7xl xl:text-8xl font-black text-black mb-4 leading-tight">
               <span className="block bg-gradient-to-r from-black via-[#1E1E1E] to-black bg-clip-text text-transparent animate-gradient-x">
                 {companyName}
@@ -162,10 +162,10 @@ export function Hero({ companyInfo }: HeroProps) {
             <p className="text-xl lg:text-2xl text-black/70 font-medium leading-relaxed">
               {tagline}
             </p>
-          </div>
+          </div> */}
 
           {/* ── CTA Buttons ── */}
-          <div className={`flex flex-col sm:flex-row gap-4 mb-16 transition-all duration-1000 delay-900 ${heroLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+          <div className={`flex flex-col mt-9 sm:flex-row gap-4 mb-16 transition-all duration-1000 delay-900 ${heroLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             <button
               onClick={() => scrollToSection("services")}
               className="group relative px-8 py-4 bg-[#F4D03F] text-black font-bold rounded-xl overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(244,208,63,0.5)] btn-magnetic"
