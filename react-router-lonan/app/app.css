@@ -462,6 +462,19 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ===== SERVICE ICONS ===== */
+.service-icon-about {
+  height: 100px;
+  gap: 10px;
+  background: var(--color-gold);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  color: var(--color-black);
+  transition: all 0.3s ease;
+}
+
 .service-icon {
   width: 80px;
   height: 80px;

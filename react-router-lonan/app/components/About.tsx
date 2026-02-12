@@ -121,6 +121,7 @@ export function About({ companyInfo }: AboutProps) {
         }} />
       </div>
 
+
       {/* ── Top Gold Accent Strip ── */}
       <div className="relative h-1 bg-gradient-to-r from-transparent via-[#F4D03F] to-transparent opacity-40" />
 
@@ -146,17 +147,44 @@ export function About({ companyInfo }: AboutProps) {
               </div> */}
 
               {/* Title text with background - Clickable */}
-              <div 
+              {/* <div 
                 className="relative px-8 pt-6 pb-4 bg-black/60 backdrop-blur-sm rounded-2xl border border-[#F4D03F]/20 cursor-pointer hover:border-[#F4D03F]/40 hover:bg-black/80 transition-all duration-300"
                 onClick={() => setIsModalOpen(true)}
-              >
-                <h2 className="text-3xl lg:text-4xl font-black text-[#F4D03F] tracking-tight">
+              > */}
+                {/* <h2 className="text-3xl lg:text-4xl font-black text-[#F4D03F] tracking-tight">
                   {getText("whoWeAre")}
-                </h2>
+                </h2> */}
                 
                 {/* Bottom accent line */}
-                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-16 h-0.5 bg-gradient-to-r from-transparent via-[#F4D03F] to-transparent rounded-full" />
-              </div>
+                {/* <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-16 h-0.5 bg-gradient-to-r from-transparent via-[#F4D03F] to-transparent rounded-full" /> */}
+              {/* </div> */}
+
+            {/* About Us Card */}
+            <div
+              className={`card group cursor-pointer hover:border-[#F4D03F] border-2 border-transparent card-hover-lift image-shine transition-all duration-700 ${
+                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+              }`}
+              style={{ transitionDelay: "0.2s" }}
+              onClick={() => setIsModalOpen(true)}
+            >
+              <div className="service-icon-about group-hover:bg-black group-hover:text-[#F4D03F]">
+                <img src={'/about-us.png'} alt={companyName} className="w-full h-full object-contain" />
+              </div><br/>
+                
+                <p className="text-[var(--color-gray-dark)] mb-4 text-3xl font-bold">{getText("whoWeAre")}</p>
+
+            
+
+              {/* Quick highlights */}
+         
+
+              <button className="btn btn-secondary w-full group-hover:bg-[var(--color-black)] group-hover:text-black group-hover:border-[var(--color-black)]">
+                {getText("learnMore")}
+                <svg className={`w-4 h-4 ${isRTL ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+            </div>
 
               {/* Corner decorations */}
               <div className="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-[#F4D03F]/30 rounded-tl-lg" />
@@ -165,10 +193,7 @@ export function About({ companyInfo }: AboutProps) {
               <div className="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-[#F4D03F]/30 rounded-br-lg" />
             </div>
 
-            {/* Subtitle/Description */}
-            <p className="mt-6 text-sm text-gray-400 font-medium uppercase tracking-[0.2em]">
-              {isRTL ? "انقر للتعرف علينا" : "Click to Discover More"}
-            </p>
+       
           </div>
 
           {/* ── Vision & Mission Buttons ── */}
