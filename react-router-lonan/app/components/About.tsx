@@ -42,10 +42,7 @@ export function About({ companyInfo }: AboutProps) {
   const { getText } = useTranslation();
   const { ref: sectionRef, isVisible } = useScrollReveal({ threshold: 0.05 });
   const { ref: statsRef, isVisible: statsVisible } = useScrollReveal({ threshold: 0.3 });
-  const [activeCard, setActiveCard] = useState<"vision" | "mission" | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isVisionModalOpen, setIsVisionModalOpen] = useState(false);
-  const [isMissionModalOpen, setIsMissionModalOpen] = useState(false);
 
   const aboutText = t(companyInfo?.about, companyInfo?.aboutEn);
   const visionText = t(companyInfo?.vision, companyInfo?.visionEn);
@@ -58,19 +55,15 @@ export function About({ companyInfo }: AboutProps) {
   const clientsCount = useCounter(500, 2500, statsVisible);
   const projectsCount = useCounter(1000, 3000, statsVisible);
 
-  // Close modals on Escape key and prevent body scroll
+  // Close modal on Escape key and prevent body scroll
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        if (isVisionModalOpen) setIsVisionModalOpen(false);
-        else if (isMissionModalOpen) setIsMissionModalOpen(false);
-        else if (isModalOpen) setIsModalOpen(false);
+      if (e.key === "Escape" && isModalOpen) {
+        setIsModalOpen(false);
       }
     };
     
-    const isAnyModalOpen = isModalOpen || isVisionModalOpen || isMissionModalOpen;
-    
-    if (isAnyModalOpen) {
+    if (isModalOpen) {
       document.body.style.overflow = "hidden";
       window.addEventListener("keydown", handleEscape);
     } else {
@@ -81,7 +74,7 @@ export function About({ companyInfo }: AboutProps) {
       window.removeEventListener("keydown", handleEscape);
       document.body.style.overflow = "";
     };
-  }, [isModalOpen, isVisionModalOpen, isMissionModalOpen]);
+  }, [isModalOpen]);
 
   if (!hasContent) {
     return (
@@ -125,11 +118,11 @@ export function About({ companyInfo }: AboutProps) {
       {/* ── Top Gold Accent Strip ── */}
       <div className="relative h-1 bg-gradient-to-r from-transparent via-[#F4D03F] to-transparent opacity-40" />
 
-      <div className="relative z-10 py-20 lg:py-28">
+      <div className="relative pt-2 z-10 lg:py-28">
         <div className="container mx-auto px-4 lg:px-8 max-w-7xl">
 
           {/* ── Section Header ── */}
-          <div className={`text-center mb-20 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
+          <div className={`text-center mb-3 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
             {/* Top decorative line */}
             <div className="flex items-center justify-center gap-4 mb-6">
               <div className="w-12 h-px bg-gradient-to-r from-transparent via-[#F4D03F]/40 to-[#F4D03F]/40 rounded-full" />
@@ -161,22 +154,23 @@ export function About({ companyInfo }: AboutProps) {
 
             {/* About Us Card */}
             <div
-              className={`card group cursor-pointer hover:border-[#F4D03F] border-2 border-transparent card-hover-lift image-shine transition-all duration-700 ${
+              className={`card group cursor-pointer hover:border-[var(--color-gold)] border-2 border-transparent card-hover-lift image-shine transition-all duration-700 ${
                 isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
               }`}
               style={{ transitionDelay: "0.2s" }}
               onClick={() => setIsModalOpen(true)}
             >
-              <div className="service-icon-about group-hover:bg-black group-hover:text-[#F4D03F]">
+              <div className="service-icon-about group-hover:bg-black group-hover:text-[var(--color-gold)]">
                 <img src={'/about-us.png'} alt={companyName} className="w-full h-full object-contain" />
-              </div><br/>
-                
-                <p className="text-[var(--color-gray-dark)] mb-4 text-3xl font-bold">{getText("whoWeAre")}</p>
+                 <h3 className="text-xl font-bold mb-2 text-black">{getText("whoWeAre")}</h3>
+              </div>
 
-            
-
-              {/* Quick highlights */}
-         
+              <p className="text-[var(--color-gray-dark)] mb-4">
+                {aboutText ? (aboutText.length > 120 ? aboutText.substring(0, 120) + "..." : aboutText) : (isRTL
+                  ? "نبني العلامات التجارية رقمياً وواقعياً. من التسويق والتصميم إلى الكلادينج وتجهيز الفعاليات، نقدم التميز في كل تفصيل"
+                  : "We build brands from the ground up—online and offline. From marketing and design to industrial cladding and grand events, we deliver excellence in every detail."
+                )}
+              </p>
 
               <button className="btn btn-secondary w-full group-hover:bg-[var(--color-black)] group-hover:text-black group-hover:border-[var(--color-black)]">
                 {getText("learnMore")}
@@ -196,31 +190,6 @@ export function About({ companyInfo }: AboutProps) {
        
           </div>
 
-          {/* ── Vision & Mission Buttons ── */}
-          <div className={`flex flex-col sm:flex-row items-center justify-center gap-6 mt-12 transition-all duration-700 delay-200 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
-            {/* Vision Button */}
-            <button
-              onClick={() => setIsVisionModalOpen(true)}
-              className="group relative px-8 py-4 bg-gradient-to-br from-[#F4D03F] to-[#C49000] text-black font-bold text-lg rounded-2xl shadow-lg shadow-[#F4D03F]/20 hover:shadow-[#F4D03F]/40 hover:scale-105 transition-all duration-300 flex items-center gap-3"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-              </svg>
-              {getText("ourVision")}
-            </button>
-
-            {/* Mission Button */}
-            <button
-              onClick={() => setIsMissionModalOpen(true)}
-              className="group relative px-8 py-4 bg-gradient-to-br from-[#F4D03F] to-[#C49000] text-black font-bold text-lg rounded-2xl shadow-lg shadow-[#F4D03F]/20 hover:shadow-[#F4D03F]/40 hover:scale-105 transition-all duration-300 flex items-center gap-3"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-              {getText("ourMission")}
-            </button>
-          </div>
 
         </div>
       </div>
@@ -328,157 +297,98 @@ export function About({ companyInfo }: AboutProps) {
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-      )}
 
-      {/* ── Vision Modal ── */}
-      {isVisionModalOpen && (
-        <div
-          className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4"
-          onClick={() => setIsVisionModalOpen(false)}
-        >
-          <div
-            className="bg-gradient-to-b from-[#1a1a1a] to-black rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-[#F4D03F]/20 animate-scaleIn"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Modal Header */}
-            <div className="bg-gradient-to-r from-[#F4D03F] via-[#e6c555] to-[#F4D03F] p-6 rounded-t-3xl flex items-center justify-between sticky top-0 z-20">
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-black/20 flex items-center justify-center">
-                  <svg className="w-7 h-7 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                  </svg>
-                </div>
-                <h3 className="text-2xl font-bold text-black">{getText("ourVision")}</h3>
+              {/* ── Gold Separator ── */}
+              <div className="flex items-center justify-center gap-4 my-20">
+                <div className="flex-1 max-w-[200px] h-px bg-gradient-to-r from-transparent to-[#F4D03F]/30" />
+                <div className="w-2 h-2 bg-[#F4D03F] rounded-full shadow-[0_0_10px_rgba(244,208,63,0.5)]" />
+                <div className="flex-1 max-w-[200px] h-px bg-gradient-to-l from-transparent to-[#F4D03F]/30" />
               </div>
-              <button
-                onClick={() => setIsVisionModalOpen(false)}
-                className="w-10 h-10 rounded-full bg-black/20 hover:bg-black/40 flex items-center justify-center transition-colors duration-200"
-              >
-                <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
 
-            {/* Modal Content */}
-            <div className="p-8 lg:p-12">
-              <div className="group relative max-w-3xl mx-auto">
-                {/* Animated border glow */}
-                <div className="absolute -inset-[1px] rounded-3xl bg-gradient-to-br from-[#F4D03F]/40 via-transparent to-[#F4D03F]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-[1px]" />
+              {/* ── Vision & Mission Cards ── */}
+              <div className="grid md:grid-cols-2 gap-6 lg:gap-8 max-w-5xl mx-auto">
+                {/* Vision Card */}
+                <div className="group relative">
+                  {/* Animated border glow */}
+                  <div className="absolute -inset-[1px] rounded-3xl bg-gradient-to-br from-[#F4D03F] via-[#e6c555] to-[#C49000] opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-[1px]" />
 
-                <div className="relative bg-[#1a1a1a] rounded-3xl p-8 lg:p-10 border border-white/[0.06] group-hover:border-transparent transition-all duration-500 overflow-hidden">
-                  {/* Background glow */}
-                  <div className="absolute top-0 right-0 w-40 h-40 bg-[#F4D03F]/[0.03] rounded-full blur-3xl" />
+                  <div className="relative bg-gradient-to-br from-[#F4D03F] via-[#e6c555] to-[#C49000] rounded-3xl p-8 lg:p-10 h-full border-2 border-[#F4D03F] group-hover:border-[#C49000] group-hover:shadow-2xl group-hover:shadow-[#F4D03F]/50 transition-all duration-500 overflow-hidden">
+                    {/* Background pattern/glow */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#F4D03F]/90 to-[#C49000]/90 opacity-100 group-hover:opacity-90 transition-opacity duration-700" />
+                    <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full blur-3xl opacity-50 group-hover:opacity-100 transition-opacity duration-700" />
 
-                  {/* Number watermark */}
-                  <div className={`absolute ${isRTL ? "left-6" : "right-6"} top-4 text-8xl font-black text-white/[0.03] select-none`}>
-                    01
-                  </div>
-
-                  <div className="relative z-10">
-                    {/* Icon row */}
-                    <div className="flex items-center gap-4 mb-6">
-                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#F4D03F] to-[#C49000] flex items-center justify-center shadow-lg shadow-[#F4D03F]/20">
-                        <svg className="w-7 h-7 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                        </svg>
-                      </div>
-                      <div>
-                        <h4 className="text-2xl font-bold text-[#F4D03F]">
-                          {getText("ourVision")}
-                        </h4>
-                        <div className="w-full h-0.5 bg-[#F4D03F]/40 rounded-full mt-1" />
-                      </div>
+                    {/* Number watermark */}
+                    <div className={`absolute ${isRTL ? "left-6" : "right-6"} top-4 text-8xl font-black text-black/10 select-none group-hover:text-black/15 transition-colors duration-700`}>
+                      01
                     </div>
 
-                    {/* Text */}
-                    <p className="text-gray-300 leading-relaxed text-lg">
-                      {visionText || (isRTL
-                        ? "أن نكون الخيار الأول للحلول الإعلانية والتسويق الإلكتروني في المملكة، بمعايير عالمية وهوية سعودية راسخة."
-                        : "To be the first choice for advertising and digital marketing solutions in the Kingdom, with global standards and a strong Saudi identity."
-                      )}
-                    </p>
+                    <div className="relative z-10">
+                      {/* Icon row */}
+                      <div className="flex items-center gap-4 mb-6">
+                        <div className="w-14 h-14 rounded-2xl bg-black/20 flex items-center justify-center shadow-lg shadow-black/20 group-hover:shadow-black/40 group-hover:scale-110 transition-all duration-500">
+                          <svg className="w-7 h-7 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <h4 className="text-2xl font-bold text-black transition-colors duration-300">
+                            {getText("ourVision")}
+                          </h4>
+                          <div className="w-full h-0.5 bg-black/30 rounded-full mt-1" />
+                        </div>
+                      </div>
+
+                      {/* Text */}
+                      <p className="text-black/80 leading-relaxed text-[1.05rem] group-hover:text-black transition-colors duration-300 font-medium">
+                        {visionText || (isRTL
+                          ? "أن نكون الخيار الأول للحلول الإعلانية والتسويق الإلكتروني في المملكة، بمعايير عالمية وهوية سعودية راسخة."
+                          : "To be the first choice for advertising and digital marketing solutions in the Kingdom, with global standards and a strong Saudi identity."
+                        )}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
-      {/* ── Mission Modal ── */}
-      {isMissionModalOpen && (
-        <div
-          className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4"
-          onClick={() => setIsMissionModalOpen(false)}
-        >
-          <div
-            className="bg-gradient-to-b from-[#1a1a1a] to-black rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-[#F4D03F]/20 animate-scaleIn"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Modal Header */}
-            <div className="bg-gradient-to-r from-[#F4D03F] via-[#e6c555] to-[#F4D03F] p-6 rounded-t-3xl flex items-center justify-between sticky top-0 z-20">
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-black/20 flex items-center justify-center">
-                  <svg className="w-7 h-7 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                </div>
-                <h3 className="text-2xl font-bold text-black">{getText("ourMission")}</h3>
-              </div>
-              <button
-                onClick={() => setIsMissionModalOpen(false)}
-                className="w-10 h-10 rounded-full bg-black/20 hover:bg-black/40 flex items-center justify-center transition-colors duration-200"
-              >
-                <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
+                {/* Mission Card */}
+                <div className="group relative">
+                  {/* Animated border glow */}
+                  <div className="absolute -inset-[1px] rounded-3xl bg-gradient-to-br from-[#C49000] via-[#e6c555] to-[#F4D03F] opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-[1px]" />
 
-            {/* Modal Content */}
-            <div className="p-8 lg:p-12">
-              <div className="group relative max-w-3xl mx-auto">
-                {/* Animated border glow */}
-                <div className="absolute -inset-[1px] rounded-3xl bg-gradient-to-br from-[#F4D03F]/20 via-transparent to-[#F4D03F]/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-[1px]" />
+                  <div className="relative bg-gradient-to-br from-[#C49000] via-[#e6c555] to-[#F4D03F] rounded-3xl p-8 lg:p-10 h-full border-2 border-[#C49000] group-hover:border-[#F4D03F] group-hover:shadow-2xl group-hover:shadow-[#F4D03F]/50 transition-all duration-500 overflow-hidden">
+                    {/* Background pattern/glow */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#C49000]/90 to-[#F4D03F]/90 opacity-100 group-hover:opacity-90 transition-opacity duration-700" />
+                    <div className="absolute bottom-0 left-0 w-40 h-40 bg-white/10 rounded-full blur-3xl opacity-50 group-hover:opacity-100 transition-opacity duration-700" />
 
-                <div className="relative bg-[#1a1a1a] rounded-3xl p-8 lg:p-10 border border-white/[0.06] group-hover:border-transparent transition-all duration-500 overflow-hidden">
-                  {/* Background glow */}
-                  <div className="absolute bottom-0 left-0 w-40 h-40 bg-[#F4D03F]/[0.03] rounded-full blur-3xl" />
-
-                  {/* Number watermark */}
-                  <div className={`absolute ${isRTL ? "left-6" : "right-6"} top-4 text-8xl font-black text-white/[0.03] select-none`}>
-                    02
-                  </div>
-
-                  <div className="relative z-10">
-                    {/* Icon row */}
-                    <div className="flex items-center gap-4 mb-6">
-                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#F4D03F] to-[#C49000] flex items-center justify-center shadow-lg shadow-[#F4D03F]/20">
-                        <svg className="w-7 h-7 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                        </svg>
-                      </div>
-                      <div>
-                        <h4 className="text-2xl font-bold text-[#F4D03F]">
-                          {getText("ourMission")}
-                        </h4>
-                        <div className="w-full h-0.5 bg-[#F4D03F]/40 rounded-full mt-1" />
-                      </div>
+                    {/* Number watermark */}
+                    <div className={`absolute ${isRTL ? "left-6" : "right-6"} top-4 text-8xl font-black text-black/10 select-none group-hover:text-black/15 transition-colors duration-700`}>
+                      02
                     </div>
 
-                    {/* Text */}
-                    <p className="text-gray-300 leading-relaxed text-lg">
-                      {missionText || (isRTL
-                        ? "أن نصنع لكل عميل بصمة إعلانية مميزة تجمع بين الإبداع والجودة والسرعة، وتواكب الفعاليات والمناسبات المحلية بروح سعودية أصيلة."
-                        : "To create a distinctive advertising footprint for each client that combines creativity, quality, and speed, keeping up with local events and occasions with an authentic Saudi spirit."
-                      )}
-                    </p>
+                    <div className="relative z-10">
+                      {/* Icon row */}
+                      <div className="flex items-center gap-4 mb-6">
+                        <div className="w-14 h-14 rounded-2xl bg-black/20 flex items-center justify-center shadow-lg shadow-black/20 group-hover:shadow-black/40 group-hover:scale-110 transition-all duration-500">
+                          <svg className="w-7 h-7 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <h4 className="text-2xl font-bold text-black transition-colors duration-300">
+                            {getText("ourMission")}
+                          </h4>
+                          <div className="w-full h-0.5 bg-black/30 rounded-full mt-1" />
+                        </div>
+                      </div>
+
+                      {/* Text */}
+                      <p className="text-black/80 leading-relaxed text-[1.05rem] group-hover:text-black transition-colors duration-300 font-medium">
+                        {missionText || (isRTL
+                          ? "أن نصنع لكل عميل بصمة إعلانية مميزة تجمع بين الإبداع والجودة والسرعة، وتواكب الفعاليات والمناسبات المحلية بروح سعودية أصيلة."
+                          : "To create a distinctive advertising footprint for each client that combines creativity, quality, and speed, keeping up with local events and occasions with an authentic Saudi spirit."
+                        )}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>

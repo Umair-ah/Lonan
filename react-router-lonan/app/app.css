@@ -463,16 +463,18 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ===== SERVICE ICONS ===== */
 .service-icon-about {
-  height: 100px;
-  gap: 10px;
+  width: 120px;
+  height: 120px;
   background: var(--color-gold);
   border-radius: 20px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 2.5rem;
+  font-size: 1.5rem;
   color: var(--color-black);
   transition: all 0.3s ease;
+  margin-bottom: 1.5rem;
 }
 
 .service-icon {
@@ -887,7 +889,7 @@ h1, h2, h3, h4, h5, h6 {
   left: 0;
   width: 0;
   height: 2px;
-  background: #F4D03F;
+  background: var(--color-black);
   transition: width 0.3s ease;
 }
 

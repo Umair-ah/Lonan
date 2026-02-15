@@ -92,7 +92,7 @@ export function Partners({ partners = [], projects = [] }: PartnersProps) {
                     <img 
                       src={partner.logo} 
                       alt={partner.name || "Partner"} 
-                      className="max-h-16 max-w-full object-contain filter grayscale group-hover:grayscale-0 opacity-70 group-hover:opacity-100 transition-all"
+                      className="max-h-16 max-w-full object-contain"
                     />
                   ) : (
                     <div className="text-center">
@@ -104,7 +104,7 @@ export function Partners({ partners = [], projects = [] }: PartnersProps) {
                 </a>
               ))}
             </div>
-
+{/* 
             <div className="mt-12 pt-8 border-t border-[var(--color-gray)]">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
                 {[
@@ -119,7 +119,7 @@ export function Partners({ partners = [], projects = [] }: PartnersProps) {
                   </div>
                 ))}
               </div>
-            </div>
+            </div> */}
           </div>
         )}
 

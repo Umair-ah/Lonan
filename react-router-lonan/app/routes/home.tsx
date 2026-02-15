@@ -142,7 +142,7 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
           <Hero companyInfo={companyInfo} />
           <About companyInfo={companyInfo} />
           <Services services={services} />
-          {/* <Partners partners={partners} projects={projects} /> */}
+          <Partners partners={partners} projects={projects} />
           <Contact companyInfo={companyInfo} />
         </main>
         <Footer companyInfo={companyInfo} />

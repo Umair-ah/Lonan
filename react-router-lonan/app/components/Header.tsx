@@ -21,11 +21,56 @@ export function Header({ companyInfo }: HeaderProps) {
   const { getText } = useTranslation();
 
   const navItems = [
-    { id: "home", label: getText("home"), href: "#home" },
-    { id: "about", label: getText("about"), href: "#about" },
-    { id: "services", label: getText("services"), href: "#services" },
-    { id: "partners", label: getText("partners"), href: "#partners" },
-    { id: "contact", label: getText("contact"), href: "#contact" },
+    { 
+      id: "home", 
+      label: getText("home"), 
+      href: "#home",
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
+      )
+    },
+    { 
+      id: "about", 
+      label: getText("about"), 
+      href: "#about",
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      )
+    },
+    { 
+      id: "services", 
+      label: getText("services"), 
+      href: "#services",
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        </svg>
+      )
+    },
+    { 
+      id: "partners", 
+      label: getText("partners"), 
+      href: "#partners",
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+      )
+    },
+    { 
+      id: "contact", 
+      label: getText("contact"), 
+      href: "#contact",
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        </svg>
+      )
+    },
   ];
 
   useEffect(() => {
@@ -61,7 +106,7 @@ export function Header({ companyInfo }: HeaderProps) {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "bg-white/95 backdrop-blur-md shadow-lg py-2"
+          ? "bg-[var(--color-gold)] backdrop-blur-md shadow-lg py-2"
           : "bg-transparent py-4"
       }`}
     >
@@ -116,7 +161,7 @@ export function Header({ companyInfo }: HeaderProps) {
                 }}
                 className={`nav-link hover-underline ${activeSection === item.id ? "active" : ""}`}
               >
-                {item.label}
+                <span className={`${activeSection === item.id ? "text-[var(--color-black)]" : "text-[var(--color-black)]"}`}>{item.label}</span>
               </a>
             ))}
           </nav>
@@ -143,7 +188,7 @@ export function Header({ companyInfo }: HeaderProps) {
           <div className="lg:hidden flex items-center gap-2">
             <LanguageToggle />
             <button
-              className="p-2 rounded-lg bg-[var(--color-gold)] text-black"
+              className="p-2 rounded-lg bg-[var(--color-black)] text-[var(--color-gold)]"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label="Toggle menu"
             >
@@ -170,7 +215,7 @@ export function Header({ companyInfo }: HeaderProps) {
             isMobileMenuOpen ? "max-h-96 mt-4" : "max-h-0"
           }`}
         >
-          <nav className="bg-white rounded-2xl shadow-lg p-4 space-y-2">
+          <nav className="bg-[var(--color-gold)] rounded-2xl shadow-lg p-4 space-y-2">
             {navItems.map((item) => (
               <a
                 key={item.id}
@@ -179,13 +224,16 @@ export function Header({ companyInfo }: HeaderProps) {
                   e.preventDefault();
                   scrollToSection(item.id);
                 }}
-                className={`block py-3 px-4 rounded-xl transition-colors ${
+                className={`flex items-center gap-3 py-3 px-4 rounded-xl transition-colors ${
                   activeSection === item.id
-                    ? "bg-[var(--color-gold)] text-black font-bold"
-                    : "hover:bg-[var(--color-gray-light)]"
+                    ? "bg-[var(--color-black)] text-[var(--color-gold)] font-bold"
+                    : "hover:bg-[var(--color-gray-light)] text-gray-700"
                 }`}
               >
-                {item.label}
+                <span className={`${activeSection === item.id ? "text-[var(--color-gold)]" : "text-[var(--color-black)]"}`}>
+                  {item.icon}
+                </span>
+                <span className={`${activeSection === item.id ? "text-[var(--color-gold)]" : "text-[var(--color-black)]"}`}>{item.label}</span>
               </a>
             ))}
             <a
@@ -194,7 +242,7 @@ export function Header({ companyInfo }: HeaderProps) {
                 e.preventDefault();
                 scrollToSection("contact");
               }}
-              className="btn btn-primary w-full mt-4"
+              className="btn btn-secondary w-full mt-4"
             >
               {getText("getQuote")}
             </a>

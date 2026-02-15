@@ -14,7 +14,7 @@ export function LanguageToggle({ className = "" }: LanguageToggleProps) {
   return (
     <button
       onClick={toggleLanguage}
-      className={`flex items-center gap-2 px-3 py-2 rounded-lg bg-[var(--color-gold)]/10 hover:bg-[var(--color-gold)]/20 transition-colors font-medium ${className}`}
+      className={`flex items-center gap-2 px-3 py-2 rounded-lg bg-[var(--color-gold)] hover:bg-[var(--color-gold)] transition-colors font-medium ${className}`}
       aria-label={language === "ar" ? "Switch to English" : "التحويل إلى العربية"}
     >
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

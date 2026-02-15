@@ -165,7 +165,7 @@ export function Hero({ companyInfo }: HeroProps) {
           </div> */}
 
           {/* ── CTA Buttons ── */}
-          <div className={`flex flex-col mt-9 sm:flex-row gap-4 mb-16 transition-all duration-1000 delay-900 ${heroLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+          {/* <div className={`flex flex-col mt-9 sm:flex-row gap-4 mb-16 transition-all duration-1000 delay-900 ${heroLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             <button
               onClick={() => scrollToSection("services")}
               className="group relative px-8 py-4 bg-[#F4D03F] text-black font-bold rounded-xl overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(244,208,63,0.5)] btn-magnetic"
@@ -190,7 +190,7 @@ export function Hero({ companyInfo }: HeroProps) {
                 {getText("contactUs")}
               </span>
             </button>
-          </div>
+          </div> */}
 
           {/* ── Quick Stats (Optional) ── */}
           {/* <div className={`grid grid-cols-3 gap-8 max-w-2xl transition-all duration-1000 delay-1100 ${heroLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
