@@ -54,6 +54,10 @@ export function Partners({ partners = [], projects = [] }: PartnersProps) {
         <div className="absolute top-1/4 right-0 w-64 h-64 bg-[var(--color-gold)]/5 rounded-full blur-3xl" />
         <div className="absolute bottom-1/4 left-0 w-64 h-64 bg-[var(--color-gold)]/5 rounded-full blur-3xl" />
       </div>
+      <div className="absolute inset-0 opacity-[0.03]" style={{
+          backgroundImage: `linear-gradient(#1E1E1E 1px, transparent 1px), linear-gradient(90deg, #1E1E1E 1px, transparent 1px)`,
+          backgroundSize: "80px 80px",
+        }} />
 
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
         <div className="text-center mb-16">
