@@ -31,7 +31,7 @@ const fallbackIcon = (
   </svg>
 );
 
-export function LoadingScreen({ onLoadingComplete, minDuration = 2800, companyInfo, services = [] }: LoadingScreenProps) {
+export function LoadingScreen({ onLoadingComplete, minDuration = 650, companyInfo, services = [] }: LoadingScreenProps) {
   const [progress, setProgress] = useState(0);
   const [activeIcon, setActiveIcon] = useState(0);
   const [phase, setPhase] = useState<"building" | "revealing" | "done">("building");

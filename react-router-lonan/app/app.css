@@ -9,12 +9,12 @@
   --color-gold-light: #FFD54F;
   --color-gold-dark: #C49000;
   /* --color-black: #212121; */
-  --color-black: #1E1E1E;
-  --color-black-pure: #1E1E1E;
+  --color-black: #383838;
+  --color-black-pure: #383838;
   --color-white: #FFFFFF;
-  --color-gray-light: #1E1E1E;
-  --color-gray: #1E1E1E;
-  --color-gray-dark: #1E1E1E;
+  --color-gray-light: #383838;
+  --color-gray: #383838;
+  --color-gray-dark: #383838;
   
   /* Fonts */
   --font-arabic: "Tajawal", "Cairo", "Noto Kufi Arabic", system-ui, sans-serif;
@@ -52,7 +52,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .heading-lg {
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-size: clamp(1rem, 3vw, 1.7rem);
   font-weight: 800;
 }
 
@@ -166,7 +166,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ===== SECTION STYLES ===== */
 .section {
-  padding: 5rem 1.5rem;
+  padding: 1rem 1.5rem;
 }
 
 .section-title {
@@ -948,4 +948,14 @@ h1, h2, h3, h4, h5, h6 {
 
 @keyframes blink {
   50% { border-color: transparent; }
+}
+
+/* ===== SCROLLBAR HIDE ===== */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari and Opera */
 }

@@ -2,9 +2,9 @@ import { Link } from "react-router";
 import type { Route } from "./+types/service";
 import { Header, Footer, WhatsAppButton } from "~/components";
 
-export function meta({ params }: Route.MetaArgs): Route.MetaFunction {
+export function meta(_: Route.MetaArgs): Route.MetaFunction {
   return [
-    { title: `${params.slug} | لونان للدعاية والإعلان` },
+    { title: `الخدمات | لونان للدعاية والإعلان` },
     {
       name: "description",
       content: "خدمات لونان للدعاية والإعلان - حلول متكاملة لنجاح أعمالك",
@@ -12,7 +12,7 @@ export function meta({ params }: Route.MetaArgs): Route.MetaFunction {
   ];
 }
 
-export default function ServicePage({ params }: Route.ComponentProps) {
+export default function ServicePage(_: Route.ComponentProps) {
   return (
     <>
       <Header />
@@ -29,11 +29,9 @@ export default function ServicePage({ params }: Route.ComponentProps) {
           </Link>
 
           <div className="bg-white rounded-3xl p-8 shadow-lg">
-            <h1 className="heading-lg text-black mb-6">
-              {decodeURIComponent(params.slug || "")}
-            </h1>
+            <h1 className="heading-lg text-black mb-6">الخدمات</h1>
             <p className="text-[var(--color-gray-dark)]">
-              صفحة الخدمة قيد الإنشاء. يمكنك التواصل معنا للحصول على مزيد من المعلومات.
+              اختر خدمة من الصفحة الرئيسية لعرض تفاصيلها.
             </p>
 
             <div className="mt-8">
