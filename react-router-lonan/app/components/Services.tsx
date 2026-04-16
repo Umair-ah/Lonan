@@ -120,49 +120,49 @@ export function Services({ services = [] }: ServicesProps) {
           </p>
         </div> */}
 
-        <div className="max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {services.map((service, index) => (
             <Link
               key={service._id}
               to={service.slug ? `/services/${service.slug}` : "/#services"}
-              className={`group block rounded-2xl border border-white/10 bg-black/20 backdrop-blur-sm hover:bg-black/30 transition-all duration-700 ${
+              className={`card group border-2 border-transparent hover:border-[var(--color-gold)] card-hover-lift image-shine transition-all duration-700 ${
                 sectionVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
               }`}
               style={{ transitionDelay: `${index * 0.15 + 0.2}s` }}
             >
-              <div className="flex items-center gap-4 p-5 sm:p-6">
-                <div className="w-14 h-14 rounded-2xl bg-[var(--color-gold)] text-black flex items-center justify-center flex-shrink-0 overflow-hidden">
+              <div className="w-full rounded-2xl bg-[var(--color-gold)] text-black flex items-center justify-center h-20 mb-4 overflow-hidden transition-colors duration-300 group-hover:text-[var(--color-gold)]">
                   {service.image ? (
                     <img
                       src={service.image}
                       alt={t(service.title, service.titleEn)}
-                      className="w-10 h-10 object-contain"
+                      className="w-24 h-24 object-contain"
                     />
                   ) : (
                     iconMap[service.icon || "default"] || iconMap["default"]
                   )}
                 </div>
 
-                <div className="min-w-0 flex-1">
-                  <h3 className="text-lg sm:text-xl font-extrabold text-white truncate">
-                    {t(service.title, service.titleEn) || (isRTL ? "خدمة" : "Service")}
-                  </h3>
-                  <p className="text-sm text-white/70 truncate">
-                    {t(service.description, service.descriptionEn)}
-                  </p>
-                </div>
+              <div className="min-w-0 flex-1">
+                <h3 className="text-xl font-bold mb-2 text-black line-clamp-1">
+                  {t(service.title, service.titleEn) || (isRTL ? "خدمة" : "Service")}
+                </h3>
+                <p className="text-[var(--color-gray-dark)] mb-4 line-clamp-3">
+                  {t(service.description, service.descriptionEn)}
+                </p>
+              </div>
 
-                <div className="flex items-center gap-2 text-[var(--color-gold)] font-bold whitespace-nowrap">
-                  <span className="hidden sm:inline">{getText("learnMore")}</span>
+              <div className="mt-auto">
+                <span className="btn btn-secondary w-full group-hover:bg-[var(--color-black)] group-hover:text-black group-hover:border-[var(--color-black)] inline-flex items-center justify-center gap-2">
+                  {getText("learnMore")}
                   <svg
-                    className={`w-5 h-5 transition-transform duration-300 ${isRTL ? "rotate-180" : ""} group-hover:translate-x-[-4px]`}
+                    className={`w-4 h-4 ${isRTL ? "rotate-180" : ""}`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                   </svg>
-                </div>
+                </span>
               </div>
             </Link>
           ))}

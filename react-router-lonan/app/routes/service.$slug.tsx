@@ -11,6 +11,7 @@ type CompanyInfo = {
   tagline?: string;
   taglineEn?: string;
   logo?: string;
+  logoLight?: string;
   phone1?: string;
   phone2?: string;
   whatsapp?: string;
@@ -38,6 +39,7 @@ const COMPANY_INFO_QUERY = `*[_type == "companyInfo"][0] {
   tagline,
   taglineEn,
   "logo": logo.asset->url,
+  "logoLight": logoLight.asset->url,
   phone1,
   phone2,
   whatsapp,
@@ -260,9 +262,9 @@ export default function ServiceSlugPage() {
               <aside className="bg-[#1f1f1f] border-t lg:border-t-0 lg:border-r border-white/10 p-6">
                 <div className="rounded-2xl border border-[var(--color-gold)]/30 bg-black/30 p-5">
                   <div className="flex items-center gap-3">
-                    {companyInfo?.logo ? (
+                    {companyInfo?.logoLight || companyInfo?.logo ? (
                       <img
-                        src={companyInfo.logo}
+                        src={companyInfo.logoLight || companyInfo.logo}
                         alt={companyInfo.companyNameEn || "Lonan"}
                         className="h-14 w-14 object-contain bg-black/20 rounded-2xl p-2"
                       />

@@ -51,7 +51,7 @@ export const serviceType = defineType({
       type: 'array',
       of: [{type: 'image', options: {hotspot: true}}],
       description: 'Add 2-3 showcase images for this service',
-      validation: (rule) => rule.max(10),
+      validation: (rule) => rule.max(40),
     }),
     defineField({
       name: 'features',
